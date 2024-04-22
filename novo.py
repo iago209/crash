@@ -108,10 +108,10 @@ while True:
             print(f"Probabilidade do próximo número ser maior que 2: {resultado_atual['probability']:.2%} | Último número em tempo real: {resultado_atual['real_number']}")
             
             # Verificar se a previsão é correta e atualizar a contagem de acertos e erros
-            if resultado_atual['probability'] > 0.5 and resultado_atual['real_number'] >= 2.0 and resultado_atual['target'] == 1:
+            if resultado_atual['probability'] > 0.5 and float(resultado_atual['real_number']) >= 2.0 and resultado_atual['target'] == 1:
                 print("Acerto!")
                 acertos += 1
-            elif resultado_atual['probability'] <= 0.5 and resultado_atual['real_number'] < 2.0 and resultado_atual['target'] == 0:
+            elif resultado_atual['probability'] <= 0.5 and float(resultado_atual['real_number']) < 2.0 and resultado_atual['target'] == 0:
                 print("Acerto!")
                 acertos += 1
             else:
