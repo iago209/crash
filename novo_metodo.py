@@ -8,6 +8,7 @@ sessao = requests.Session()
 # Variáveis globais para armazenar os dados
 X = []
 y = []
+ultimo_id = None  # Inicialize o último ID como None
 
 # Função para solicitar a API
 def get_api_data():
@@ -24,7 +25,7 @@ def get_api_data():
     else:
         print("Falha ao obter dados da API")
         return None
-        
+
 # Função para calcular estatísticas dos últimos números
 def calculate_statistics(ultimos_numeros):
     last = list(ultimos_numeros)
@@ -38,9 +39,20 @@ def calculate_statistics(ultimos_numeros):
     change_rate_last_10 = last[-1] - last[-10]
     return [mean, std_dev, maximum, minimum, variance, median, change_rate_last_10]
 
+# Função para salvar os novos dados em um arquivo de texto
+def save_new_crashes_to_txt(data):
+    with open("crash_data.txt", "a") as file:
+        for game in data:
+            crash = f"Crash: {game['crash_point']}x\n"
+            if crash not in open("crash_data.txt").read():
+                file.write(crash)
+
 # Função para analisar os dados e treinar o modelo
 def analyze_and_train(data):
     global X, y
+    # Salvar os dados em um arquivo de texto
+    save_new_crashes_to_txt(data)
+    
     # Adicionar os novos dados aos conjuntos de treinamento
     for game in data:
         ultimos_numeros = [float(game["crash_point"]) for game in data]
