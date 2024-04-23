@@ -94,6 +94,9 @@ def analyze_data(data):
             "target": target
         }
 
+        # Imprimir o resultado atual
+        print(f"Probabilidade do próximo número ser maior que 2: {resultado_atual['probability']:.2%} | Último número em tempo real: {resultado_atual['real_number']}")
+
         # Verificar se a previsão é correta e atualizar a contagem de acertos e erros
         if probability_over_2 > 0.5 and float(data[1]['crash_point']) >= 2.0:
             print("Acerto!")
@@ -101,7 +104,7 @@ def analyze_data(data):
         elif probability_over_2 > 0.5 and float(data[1]['crash_point']) < 2.0:
             print("Erro!")
             acertos += 1
-            
+
         # Imprimir a contagem atualizada de acertos e erros
         print(f"Acertos: {acertos} | Erros: {erros}")
 
