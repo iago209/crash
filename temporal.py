@@ -76,7 +76,7 @@ def analyze_data(data):
 
     # Adicionar os dados aos conjuntos de treinamento
     X.append(features)
-    target = 1 if ultimos_20_numeros[-1] >= 2.0 else 0
+    target = 1 if ultimos_20_numeros[-1] > 2 else 0
     y.append(target)
 
     # Treinar o modelo
@@ -85,7 +85,7 @@ def analyze_data(data):
     # Se o modelo for treinado com sucesso
     if model:
         # Prever a probabilidade do próximo número ser maior que 2
-        probability_over_2 = model.predict_proba(np.array(features).reshape(1, -1))[0][1]
+        probability_over_2 = model.predict_proba([features])[0][1]
 
         # Armazenar temporariamente o resultado atual
         resultado_atual = {
@@ -95,19 +95,7 @@ def analyze_data(data):
         }
 
         # Imprimir o resultado atual
-        print(f"Probabilidade do próximo número ser maior que 2: {resultado_atual['probability']:.2%} | Último número em tempo real: {resultado_atual['real_number']}")
-
-        # Verificar se a previsão é correta e atualizar a contagem de acertos e erros
-        if probability_over_2 > 0.5:
-            if target == 1:
-                print("Acerto!")
-                acertos += 1
-            else:
-                print("Erro!")
-                erros += 1
-                
-            # Imprimir a contagem atualizada de acertos e erros
-            print(f"Acertos: {acertos} | Erros: {erros}")
+        print(f"Probabilidade do próximo número ser maior que 2: {probability_over_2:.2%} | Último número em tempo real: {data[0]['crash_point']}")
 
 # Loop principal
 while True:
@@ -119,8 +107,21 @@ while True:
         # Analisar os dados
         analyze_data(api_data)
         
-        # Limpar o resultado atual para a próxima iteração
-        resultado_atual = None
+        # Se houver um resultado temporário, atualizar a contagem de acertos e erros
+        if resultado_atual:
+            # Verificar se a previsão é correta e atualizar a contagem de acertos e erros
+            if (resultado_atual['probability'] > 0.5 and float(resultado_atual['real_number']) >= 2.0) or (resultado_atual['probability'] <= 0.5 and float(resultado_atual['real_number']) < 2.0):
+                print("Acerto!")
+                acertos += 1
+            else:
+                print("Erro!")
+                erros += 1
+                
+            # Imprimir a contagem atualizada de acertos e erros
+            print(f"Acertos: {acertos} | Erros: {erros}")
+            
+            # Limpar o resultado atual para a próxima iteração
+            resultado_atual = None
     
     # Aguardar 5 segundos antes da próxima solicitação
     time.sleep(5)
