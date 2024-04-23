@@ -11,14 +11,20 @@ y = []
 
 # Função para solicitar a API
 def get_api_data():
-    url = "https://blaze1.space/api/crash_games/all"
+    global ultimo_id
+    url = "https://blaze1.space/api/crash_games/recent"
     response = sessao.get(url, timeout=5)
     if response.status_code == 200:
-        return response.json()
+        data = response.json()
+        if data and data[0]["id"] != ultimo_id:
+            ultimo_id = data[0]["id"]
+            return data
+        else:
+            return None
     else:
         print("Falha ao obter dados da API")
         return None
-
+        
 # Função para calcular estatísticas dos últimos números
 def calculate_statistics(ultimos_numeros):
     last = list(ultimos_numeros)
